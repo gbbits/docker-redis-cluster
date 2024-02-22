@@ -1,0 +1,62 @@
+version : '3'
+services :
+    ################################ redis 主从 ################################
+    redis-master:
+        build : ./master
+        ports :
+            - "127.0.0.1:6379:6379" # 如不需外网访问容器里面的服务 设置ip地址为127.0.0.1即可
+        volumes:
+            - D:\docker-cluster\redis\master\log:/opt/log
+        networks:
+          - redis-net
+        container_name : redis-master
+    redis-slave1:
+        build : ./slave1
+        ports :
+            - "127.0.0.1:6380:6380"
+        volumes:
+            - D:\docker-cluster\redis\slave1\log:/opt/log
+        networks:
+            - redis-net
+        container_name : redis-slave1
+    redis-slave2:
+        build : ./slave2
+        ports :
+            - "127.0.0.1:6381:6381"
+        volumes:
+            - D:\docker-cluster\redis\slave2\log:/opt/log
+        networks:
+            - redis-net
+        container_name : redis-slave2
+
+    ######################### redis 哨兵 ##################################
+    redis-sentinel1:
+        build : ./sentinel1
+        ports :
+            - "127.0.0.1:26379:26379"
+        volumes:
+            - D:\docker-cluster\redis\sentinel1\log:/opt/log
+        networks:
+            - redis-net
+        container_name : redis-sentinel1
+    redis-sentinel2:
+        build : ./sentinel2
+        ports :
+            - "127.0.0.1:26380:26380"
+        volumes:
+            - D:\docker-cluster\redis\sentinel2\log:/opt/log
+        networks:
+            - redis-net
+        container_name : redis-sentinel2
+    redis-sentinel3:
+        build: ./sentinel3
+        ports:
+            - "127.0.0.1:26381:26381"
+        volumes:
+            - D:\docker-cluster\redis\sentinel3\log:/opt/log
+        networks:
+            - redis-net
+        container_name: redis-sentinel3
+
+networks: # 创建网络
+    redis-net:
